@@ -25,8 +25,9 @@ const App = () => {
     return (
         <Container sx={{mx: 1, my: 1}}>
             <h1>Parts Unlimited Inventory</h1>
+
             <Box display='flex' flexDirection='row'>
-                <Box>
+                <Box role='table'>
                     <h2>Product</h2>
                     {products.map((product, index) => (
                         <div key={index}>{product.name}</div>
@@ -40,12 +41,21 @@ const App = () => {
                         <button type="submit">Submit</button>
                     </form>
                 </Box>
+
                 <Box>
                     <h2>Quantity</h2>
                     {products.map((product, index) => (
                         <div key={index}>{product.quantity}</div>
                     ))}
                 </Box>
+            </Box>
+            <Box>
+                <h2>Add quantity</h2>
+                <select>
+                    {products.map((product, index) => (
+                        <option value={product.name} key={index}>{product.name}</option>
+                    ))}
+                </select>
             </Box>
         </Container>
     );

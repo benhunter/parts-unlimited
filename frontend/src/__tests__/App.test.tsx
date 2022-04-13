@@ -1,5 +1,5 @@
 import React from "react";
-import {render, screen} from "@testing-library/react";
+import {render, screen, within} from "@testing-library/react";
 import App from "../App";
 import userEvent from "@testing-library/user-event";
 import {createProduct, getProducts} from "../productsApiClient";
@@ -23,7 +23,10 @@ describe("inventory", () => {
 
       expect(screen.getByText("Parts Unlimited Inventory")).toBeInTheDocument();
       expect(screen.getByText("Product")).toBeInTheDocument();
-      expect(await screen.findByText("a product")).toBeInTheDocument();
+
+      const table = await screen.findByRole("table", {});
+      expect(table).toBeInTheDocument();
+      expect(within(table).getByText("a product")).toBeInTheDocument();
     });
 
     it("should display the products' quantities", async () => {
@@ -46,7 +49,31 @@ describe("inventory", () => {
       addProduct("shiny new product");
 
       expect(mockCreateProduct).toHaveBeenCalledWith("shiny new product");
-      expect(await screen.findByText("shiny new product")).toBeInTheDocument();
+
+      const table = await screen.findByRole("table")
+      expect(table).toBeInTheDocument();
+      expect(within(table).getByText("shiny new product")).toBeInTheDocument();
     });
   });
+
+  describe("when I increase a product quantity", () => {
+    it("should display the updated quantity", async () => {
+      let newQuantity = 1;
+      const productName = "shiny new product";
+
+      // Make a product
+      mockGetProducts.mockResolvedValueOnce([{name: productName, quantity: 0}]);
+
+      render(<App/>);
+
+      // Update the quantity
+      userEvent.selectOptions(await screen.findByRole("combobox"), productName);
+      userEvent.type(screen.getByRole("textbox"), newQuantity.toString());
+      userEvent.click(screen.getByRole("button", {name: "Add"}));
+
+      // Assert the update
+      expect(await screen.findByText(newQuantity)).toBeInTheDocument();
+
+    })
+  })
 });
