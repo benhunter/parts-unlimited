@@ -1,10 +1,14 @@
 {
   "scripts": {
-    "cypress:open": "cypress open"
+    "open": "./stop-server.sh && start-server-and-test 'cd .. && SPRING_PROFILES_ACTIVE=journey ./gradlew bootRun' http://localhost:8080 'yarn cypress:open'",
+    "test": "./stop-server.sh && start-server-and-test 'cd .. && SPRING_PROFILES_ACTIVE=journey ./gradlew bootRun' http://localhost:8080 'yarn cypress:run'",
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run"
   },
   "dependencies": {
     "@testing-library/cypress": "^8.0.2",
     "cypress": "^9.2.1",
+    "start-server-and-test": "^1.14.0",
     "typescript": "^4.5.4"
   }
 }

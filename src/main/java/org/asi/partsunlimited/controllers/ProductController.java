@@ -30,6 +30,12 @@ public class ProductController {
         return ResponseEntity.created(location).body(savedProduct);
     }
 
+    @PutMapping("/products/{id}")
+    public Product putProduct(@PathVariable Long id, @RequestBody Product product) {
+        product.setId(id);
+        return productService.updateProduct(product);
+    }
+
     private URI createResourceLocation(String path, Long resourceId) {
         return ServletUriComponentsBuilder.fromCurrentRequestUri().port("8080").path(path)
                 .buildAndExpand(resourceId).toUri();

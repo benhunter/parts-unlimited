@@ -35,3 +35,8 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### Cypress
+journey/cypress/screenshots
+journey/cypress/videos
+
