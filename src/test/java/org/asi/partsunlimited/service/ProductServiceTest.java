@@ -46,4 +46,18 @@ class ProductServiceTest {
 
         verify(productRepository).save(productToSave);
     }
+
+    @Test
+    void shouldUpdateAnExistingProductWithChanges(){
+        Product product = new Product()
+                .setId(5L)
+                .setName("product")
+                .setQuantity(2);
+        when(productService.updateProduct(product)).thenReturn(product);
+
+        Product actualProduct = productService.updateProduct(product);
+
+        verify(productRepository).save(product);
+        assertThat(actualProduct).isEqualTo(product);
+    }
 }

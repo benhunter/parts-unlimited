@@ -1,6 +1,7 @@
 package org.asi.partsunlimited.controllers;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.asi.partsunlimited.Product;
 import org.asi.partsunlimited.services.ProductService;
 import org.junit.jupiter.api.Test;
@@ -14,8 +15,7 @@ import java.util.List;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -52,5 +52,25 @@ class ProductControllerTests {
                 .andExpect(jsonPath("$[1].quantity").value("1"));
 
         verify(productService).getProducts();
+    }
+
+    @Test
+    void shouldUpdateProductWhenAProductIsChanged() throws Exception {
+        Product product = new Product()
+                .setId(5L)
+                .setName("product")
+                .setQuantity(2);
+        ObjectMapper mapper = new ObjectMapper();
+
+        when(productService.updateProduct(product))
+                .thenReturn(product);
+        this.mockMvc.perform(put("/products/" + product.getId().toString())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(product))
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(product.getId()))
+                .andExpect(jsonPath("$.name").value(product.getName()))
+                .andExpect(jsonPath("$.quantity").value(product.getQuantity()));
     }
 }
